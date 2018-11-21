@@ -1,0 +1,473 @@
+var customJSONEditorClient = {
+    jsonPosterSettings: {},    
+    jsonDesignSettings: {},
+    jsonMetaData: {},
+    editorPosterSettings: new Object(),    
+    editorJsonDesignSettings: new Object(),
+    editorJsonMetaData: new Object(),
+    jsonPosterSettingsSchema: [],    
+    jsonDesignSettingsSchema: [],
+    jsonMetaDataSchema: [],
+    arrLayoutOptions: ['tree'],
+    applicationDomain: '',
+    jsonSchemaDomain: '',
+    pageUrl: '',
+
+    init: function () {
+        customJSONEditorClient.getApplicationDomain();
+        customJSONEditorClient.getPageUrl();
+        customJSONEditorClient.initDefaultData();
+        customJSONEditorClient.getJSONData();
+        customJSONEditorClient.initJSONEditorPosterSettings();
+        customJSONEditorClient.initJSONEditorMetaData();
+        customJSONEditorClient.initJSONEditorDesignSettings();
+    },
+    getApplicationDomain: function () {
+        customJSONEditorClient.applicationDomain = $('#hdnApplicationDomain').val();
+        customJSONEditorClient.jsonSchemaDomain = $('#hdnJsonSchemaDomain').val();
+    },
+    initDefaultData: function () {
+        customJSONEditorClient.defaultPosterSettings();
+        customJSONEditorClient.defaultMetaData();
+        customJSONEditorClient.defaultDesignSettings();
+    },
+    defaultPosterSettings: function () {
+        customJSONEditorClient.jsonPosterSettings = {
+            "definitions": {},
+            "$schema": customJSONEditorClient.jsonSchemaDomain +"/draft-07/schema#",
+            "$id": customJSONEditorClient.applicationDomain + "/json/clientipostersettings.json",
+            "type": "object",
+            "title": "The Root Schema",
+            "required": [
+                "domain",
+                "gallerythumbnail"
+            ],
+            "properties": {
+                "enableChat": {
+                    "$id": "#/properties/chat",
+                    "type": "string",
+                    "title": "The Chat Schema",
+                    "enableChat": false
+                },
+                "subdomain": {
+                    "$id": "#/properties/domain",
+                    "type": "string",
+                    "title": "The Domain Schema",
+                    "default": "",
+                    "examples": [
+                        "company.ipostersessions.com"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "gallerythumbnail": {
+                    "$id": "#/properties/gallerythumbnail",
+                    "type": "string",
+                    "title": "The Gallerythumbnail Schema",
+                    "default": "",
+                    "examples": [
+                        "<div>code</div>"
+                    ],
+                    "pattern": "^(.*)$"
+                }
+            }
+        }
+    },
+    defaultMetaData: function () {
+        customJSONEditorClient.jsonMetaData = {
+            "definitions": {},
+            "$schema": customJSONEditorClient.jsonSchemaDomain +"/draft-07/schema#",
+            "$id": customJSONEditorClient.applicationDomain + "/json/clientmetadata.json",
+            "type": "object",
+            "title": "The Root Schema",
+            "properties": {
+                "homepage": {
+                    "$id": "#/properties/homepage",
+                    "type": "string",
+                    "title": "The Homepage Schema",
+                    "default": "",
+                    "examples": [
+                        "http://www.company.com"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "email": {
+                    "$id": "#/properties/email",
+                    "type": "string",
+                    "title": "The Email Schema",
+                    "default": "",
+                    "examples": [
+                        "info@company.com"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "phone": {
+                    "$id": "#/properties/phone",
+                    "type": "string",
+                    "title": "The Phone Schema",
+                    "default": "",
+                    "examples": [
+                        "+1-800-555-1234"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "address": {
+                    "$id": "#/properties/address",
+                    "type": "object",
+                    "title": "The Address Schema",
+                    "properties": {
+                        "street": {
+                            "$id": "#/properties/address/properties/street",
+                            "type": "string",
+                            "title": "The Street Schema",
+                            "default": "",
+                            "examples": [
+                                "1st Street"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "street2": {
+                            "$id": "#/properties/address/properties/street2",
+                            "type": "string",
+                            "title": "The Street2 Schema",
+                            "default": "",
+                            "examples": [
+                                "Apt 10"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "postalcode": {
+                            "$id": "#/properties/address/properties/postalcode",
+                            "type": "string",
+                            "title": "The Postalcode Schema",
+                            "default": "",
+                            "examples": [
+                                "50555"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "postalarea": {
+                            "$id": "#/properties/address/properties/postalarea",
+                            "type": "string",
+                            "title": "The Postalarea Schema",
+                            "default": "",
+                            "examples": [
+                                "WA"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "state": {
+                            "$id": "#/properties/address/properties/state",
+                            "type": "string",
+                            "title": "The State Schema",
+                            "default": "",
+                            "examples": [
+                                "Washington"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "country": {
+                            "$id": "#/properties/address/properties/country",
+                            "type": "string",
+                            "title": "The Country Schema",
+                            "default": "",
+                            "examples": [
+                                "USA"
+                            ],
+                            "pattern": "^(.*)$"
+                        }
+                    }
+                },
+                "contact": {
+                    "$id": "#/properties/contact",
+                    "type": "object",
+                    "title": "The Contact Schema",
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "$id": "#/properties/contact/properties/name",
+                            "type": "string",
+                            "title": "The Name Schema",
+                            "default": "",
+                            "examples": [
+                                "Firstname Lastname"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "email": {
+                            "$id": "#/properties/contact/properties/email",
+                            "type": "string",
+                            "title": "The Email Schema",
+                            "default": "",
+                            "examples": [
+                                "firstname@company.com"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "phone": {
+                            "$id": "#/properties/contact/properties/phone",
+                            "type": "string",
+                            "title": "The Phone Schema",
+                            "default": "",
+                            "examples": [
+                                "+1-800-555-3452"
+                            ],
+                            "pattern": "^(.*)$"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    defaultDesignSettings: function () {
+        customJSONEditorClient.jsonDesignSettings = {
+            "definitions": {},
+            "$schema": customJSONEditorClient.jsonSchemaDomain +"/draft-07/schema#",
+            "$id": customJSONEditorClient.applicationDomain + "/json/clientmetadata.json",
+            "type": "object",
+            "title": "The Root Schema",
+            "properties": {
+                "homepage": {
+                    "$id": "#/properties/homepage",
+                    "type": "string",
+                    "title": "The Homepage Schema",
+                    "default": "",
+                    "examples": [
+                        "http://www.company.com"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "email": {
+                    "$id": "#/properties/email",
+                    "type": "string",
+                    "title": "The Email Schema",
+                    "default": "",
+                    "examples": [
+                        "info@company.com"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "phone": {
+                    "$id": "#/properties/phone",
+                    "type": "string",
+                    "title": "The Phone Schema",
+                    "default": "",
+                    "examples": [
+                        "+1-800-555-1234"
+                    ],
+                    "pattern": "^(.*)$"
+                },
+                "address": {
+                    "$id": "#/properties/address",
+                    "type": "object",
+                    "title": "The Address Schema",
+                    "properties": {
+                        "street": {
+                            "$id": "#/properties/address/properties/street",
+                            "type": "string",
+                            "title": "The Street Schema",
+                            "default": "",
+                            "examples": [
+                                "1st Street"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "street2": {
+                            "$id": "#/properties/address/properties/street2",
+                            "type": "string",
+                            "title": "The Street2 Schema",
+                            "default": "",
+                            "examples": [
+                                "Apt 10"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "postalcode": {
+                            "$id": "#/properties/address/properties/postalcode",
+                            "type": "string",
+                            "title": "The Postalcode Schema",
+                            "default": "",
+                            "examples": [
+                                "50555"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "postalarea": {
+                            "$id": "#/properties/address/properties/postalarea",
+                            "type": "string",
+                            "title": "The Postalarea Schema",
+                            "default": "",
+                            "examples": [
+                                "WA"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "state": {
+                            "$id": "#/properties/address/properties/state",
+                            "type": "string",
+                            "title": "The State Schema",
+                            "default": "",
+                            "examples": [
+                                "Washington"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "country": {
+                            "$id": "#/properties/address/properties/country",
+                            "type": "string",
+                            "title": "The Country Schema",
+                            "default": "",
+                            "examples": [
+                                "USA"
+                            ],
+                            "pattern": "^(.*)$"
+                        }
+                    }
+                },
+                "contact": {
+                    "$id": "#/properties/contact",
+                    "type": "object",
+                    "title": "The Contact Schema",
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "$id": "#/properties/contact/properties/name",
+                            "type": "string",
+                            "title": "The Name Schema",
+                            "default": "",
+                            "examples": [
+                                "Firstname Lastname"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "email": {
+                            "$id": "#/properties/contact/properties/email",
+                            "type": "string",
+                            "title": "The Email Schema",
+                            "default": "",
+                            "examples": [
+                                "firstname@company.com"
+                            ],
+                            "pattern": "^(.*)$"
+                        },
+                        "phone": {
+                            "$id": "#/properties/contact/properties/phone",
+                            "type": "string",
+                            "title": "The Phone Schema",
+                            "default": "",
+                            "examples": [
+                                "+1-800-555-3452"
+                            ],
+                            "pattern": "^(.*)$"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    initJSONEditorPosterSettings: function () {
+        var container = document.getElementById("JSONEditorPosterSettings");
+        var options = {
+            modes: customJSONEditorClient.arrLayoutOptions,
+            templates: customJSONEditorClient.jsonPosterSettingsSchema
+        };
+        customJSONEditorClient.editorPosterSettings = new JSONEditor(container, options);
+        customJSONEditorClient.editorPosterSettings.set(customJSONEditorClient.jsonPosterSettings);
+        customJSONEditorClient.jsonPosterSettings = customJSONEditorClient.editorPosterSettings.get();
+    },
+    initJSONEditorMetaData: function () {
+        var container = document.getElementById("JSONEditorMetaData");
+        var options = {
+            modes: customJSONEditorClient.arrLayoutOptions,
+            templates: customJSONEditorClient.jsonMetaDataSchema
+        };
+        customJSONEditorClient.editorJsonMetaData = new JSONEditor(container, options);
+        customJSONEditorClient.editorJsonMetaData.set(customJSONEditorClient.jsonMetaData);
+        customJSONEditorClient.jsonMetaData = customJSONEditorClient.editorJsonMetaData.get();
+    },
+    initJSONEditorDesignSettings: function () {        
+        var container = document.getElementById("JSONEditorDesignSettings");
+        var options = {
+            modes: customJSONEditorClient.arrLayoutOptions,
+            templates: customJSONEditorClient.jsonDesignSettingsSchema
+        };
+        customJSONEditorClient.editorJsonDesignSettings = new JSONEditor(container, options);
+        customJSONEditorClient.editorJsonDesignSettings.set(customJSONEditorClient.jsonDesignSettings);
+        customJSONEditorClient.jsonDesignSettings = customJSONEditorClient.editorJsonDesignSettings.get();
+    },   
+    isValidJSONString: function (str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    },
+    isEmptyJsonObject: function (strJson) {
+        if (jQuery.isEmptyObject(JSON.parse(strJson))) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    getPageUrl: function () {
+        customJSONEditorClient.pageUrl = $('#hdnCurrentPageUrl').val();
+    },
+    getJSONData: function () {
+        var dataLayout = {
+            id: $('#hdnClientId').val()
+        }
+        $.ajax({
+            type: "POST",            
+            url: customJSONEditorClient.pageUrl + "?handler=JSONLayout",
+            async: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: JSON.stringify(dataLayout),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                status = true;
+                try {
+                    if (customJSONEditorClient.isValidJSONString(response.jsonPosterSettings) && !customJSONEditorClient.isEmptyJsonObject(response.jsonPosterSettings)) {
+                        customJSONEditorClient.jsonPosterSettings = JSON.parse(response.jsonPosterSettings);
+                    }
+                    if (customJSONEditorClient.isValidJSONString(response.jsonMetaData) && !customJSONEditorClient.isEmptyJsonObject(response.jsonMetaData)) {
+                        customJSONEditorClient.jsonMetaData = JSON.parse(response.jsonMetaData);
+                    }
+                    if (customJSONEditorClient.isValidJSONString(response.jsonDesignSettings) && !customJSONEditorClient.isEmptyJsonObject(response.jsonDesignSettings)) {
+                        customJSONEditorClient.jsonDesignSettings = JSON.parse(response.jsonDesignSettings);
+                    }
+                } catch (e) {
+                    console.log('log getJSONData');
+                }
+            },
+            failure: function (response) {
+                status = true;
+            }
+        });
+    },
+    reloadJSONLayout: function () {
+        customJSONEditorClient.jsonPosterSettings = customJSONEditorClient.editorPosterSettings.get();
+        customJSONEditorClient.jsonMetaData = customJSONEditorClient.editorJsonMetaData.get();
+        customJSONEditorClient.jsonDesignSettings = customJSONEditorClient.editorJsonDesignSettings.get();
+    },    
+    setHiddenJSONContent: function () {        
+        customJSONEditorClient.reloadJSONLayout();
+        $('#hdnJsonPosterSettings').val(JSON.stringify(customJSONEditorClient.jsonPosterSettings));        
+        $('#hdnJsonDesignSettings').val(JSON.stringify(customJSONEditorClient.jsonDesignSettings));
+        $('#hdnJsonMetaData').val(JSON.stringify(customJSONEditorClient.jsonMetaData));
+    }, 
+}
+$(document).ready(function () {
+    try {        
+        customJSONEditorClient.init();
+    } catch (e) {
+
+    }
+});
